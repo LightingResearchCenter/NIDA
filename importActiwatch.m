@@ -1,14 +1,13 @@
-function [Date1,Time,Activity] = importActiwatch(filename, startRow, endRow)
+function [time,activity,subject] = importActiwatch(filename, startRow, endRow)
 %IMPORTACTIWATCH Import numeric data from a text file as column vectors.
-%   [DATE1,TIME,ACTIVITY] = IMPORTFILE(FILENAME) Reads data from text file
+%   [TIME,ACTIVITY,SUBJECT] = IMPORTFILE(FILENAME) Reads data from text file
 %   FILENAME for the default selection.
 %
-%   [DATE1,TIME,ACTIVITY] = IMPORTFILE(FILENAME, STARTROW, ENDROW) Reads
+%   [TIME,ACTIVITY,SUBJECT] = IMPORTFILE(FILENAME, STARTROW, ENDROW) Reads
 %   data from rows STARTROW through ENDROW of text file FILENAME.
 %
 % Example:
-%   [Date1,Time,Activity] = importfile('01_3_21_2011_3_24_2011.csv',3,
-%   17560);
+%   [time,activity,subject] = importfile('01_3_21_2011_3_24_2011.csv',3,17560);
 %
 %    See also TEXTSCAN.
 
@@ -35,10 +34,15 @@ fileID = fopen(filename,'r');
 % This call is based on the structure of the file used to generate this
 % code. If an error occurs for a different file, try regenerating the code
 % from the Import Tool.
-dataArray = textscan(fileID, formatSpec, endRow(1)-startRow(1)+1, 'Delimiter', delimiter, 'EmptyValue' ,NaN,'HeaderLines', startRow(1)-1, 'ReturnOnError', false);
+dataArray = textscan(fileID, formatSpec, endRow(1)-startRow(1)+1,...
+    'Delimiter', delimiter, 'EmptyValue' ,NaN,'HeaderLines',...
+    startRow(1)-1, 'ReturnOnError', false);
 for block=2:length(startRow)
     frewind(fileID);
-    dataArrayBlock = textscan(fileID, formatSpec, endRow(block)-startRow(block)+1, 'Delimiter', delimiter, 'EmptyValue' ,NaN,'HeaderLines', startRow(block)-1, 'ReturnOnError', false);
+    dataArrayBlock = textscan(fileID, formatSpec,...
+        endRow(block)-startRow(block)+1, 'Delimiter', delimiter,...
+        'EmptyValue' ,NaN,'HeaderLines', startRow(block)-1,...
+        'ReturnOnError', false);
     for col=1:length(dataArray)
         dataArray{col} = [dataArray{col};dataArrayBlock{col}];
     end
@@ -47,14 +51,26 @@ end
 %% Close the text file.
 fclose(fileID);
 
-%% Post processing for unimportable data.
-% No unimportable data rules were applied during the import, so no post
-% processing code is included. To generate code which works for
-% unimportable data, select unimportable cells in a file and regenerate the
-% script.
-
 %% Allocate imported array to column variable names
-Date1 = dataArray{:, 1};
-Time = dataArray{:, 2};
-Activity = dataArray{:, 3};
+date0 = dataArray{:, 1};
+time0 = dataArray{:, 2};
+[currentYear,~,~,~,~,~] = datevec(now);
+% Combine date and time
+time1 = datenum(date0) + datenum(time0) - datenum(currentYear,1,1);
+activity1 = dataArray{:, 3};
 
+%% Extract information from filename
+[~,name,~] = fileparts(filename);
+pattern    = 'sub(\d*)_(\d*)-(\d*)-(\d*)_(\d*)-(\d*)-(\d*)';
+tokens     = regexpi(name,pattern,'tokens');
+numTokens  = str2double(tokens{1});
+subject    = numTokens(1);
+fileStart  = datenum(numTokens(2),numTokens(3),numTokens(4));
+fileEnd    = datenum(numTokens(5),numTokens(6),numTokens(7));
+
+%% Trim the data
+idx = time1 >= fileStart & time1 < fileEnd + 1;
+time = time1(idx);
+activity = activity1(idx);
+
+end

@@ -5,11 +5,11 @@ startDir = 'C:\Users\jonesg5\Desktop\NIDA';
 actiDir = uigetdir(startDir,'Select Actiwatch folder.');
 sleepDir = uigetdir(startDir,'Select sleep time folder.');
 
-actiListing = dir(fullfile(actiDir,'sub*.txt'));
+actiListing = dir(fullfile(actiDir,'sub*.csv'));
 
 % Preallocate output dataset
 n = length(actiListing);
-out = struct([]);
+out = struct;
 out.subject = cell(n,1);
 out.trial = cell(n,1);
 out.sleep = cell(n,1);

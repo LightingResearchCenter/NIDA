@@ -233,3 +233,8 @@ slprj/
 
 # Data files
 *.mat
+
+
+## Excel
+*.xls
+*.xlsx

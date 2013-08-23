@@ -2,7 +2,7 @@ function [SleepStart,SleepEnd,ActualSleep,ActualSleepPercent,...
     ActualWake,ActualWakePercent,SleepEfficiency,Latency,SleepBouts,...
     WakeBouts,MeanSleepBout,MeanWakeBout] = ...
     CalcSleepParams(Activity,Time,AnalysisStart,AnalysisEnd,...
-    BedTime,GetUpTime)
+    BedTime,GetUpTime,Subject)
 %CALCSLEEPPARAMS Calculate sleep parameters using Actiware method
 %   Values and calculations are taken from Avtiware-Sleep
 %   Version 3.4 documentation Appendix: A-1 Actiwatch Algorithm
@@ -46,7 +46,11 @@ end
 % Set Sleep Start to Bed Time if it was not found
 if exist('SleepStart','var') == 0
     SleepStart = BedTime;
-    SleepStartIndex = find(Time > BedTime,1);
+    SleepStartIndex = find(Time > SleepStart,1);
+end
+if SleepStart < AnalysisStart
+    SleepStart = BedTime + 10/60/24;
+    SleepStartIndex = find(Time > SleepStart,1);
 end
 
 %% Find Sleep End
@@ -91,5 +95,15 @@ end
 MeanSleepBout = ActualSleep/SleepBouts;
 % Claculate Mean Wake Bout Time in minutes
 MeanWakeBout = ActualWake/WakeBouts;
+
+if ActualSleep < 10 || SleepEfficiency > 100
+    close all;
+    plot(Time,Activity);
+    datetick;
+    title({['Subject: ',num2str(Subject)];...
+        [datestr(Time(1),'mm/dd/yyyy HH:MM'),' - ',...
+        datestr(Time(end),'mm/dd/yyyy HH:MM')]});
+    saveas(gcf,['sub',num2str(Subject),'_',datestr(Time(1),'yyyy-mm-dd'),'.pdf']);
+end
 
 end

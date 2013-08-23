@@ -1,6 +1,6 @@
 function [ActualSleep,ActualSleepPercent,ActualWake,...
     ActualWakePercent,SleepEfficiency,Latency,SleepBouts,WakeBouts,...
-    MeanSleepBout,MeanWakeBout] = AnalyzeFile(time,activity,BedTime,GetUpTime)
+    MeanSleepBout,MeanWakeBout] = AnalyzeFile(time,activity,BedTime,GetUpTime,Subject)
 Days = length(BedTime);
 
 % Preallocate AnalysisStart and AnalysisEnd
@@ -32,7 +32,7 @@ for i = 1:Days
     ActualWake(i),ActualWakePercent(i),SleepEfficiency(i),Latency(i),...
     SleepBouts(i),WakeBouts(i),MeanSleepBout(i),MeanWakeBout(i)] = ...
     CalcSleepParams(activity,time,AnalysisStart(i),AnalysisEnd(i),...
-    BedTime(i),GetUpTime(i));
+    BedTime(i),GetUpTime(i),Subject);
 end
 
 end

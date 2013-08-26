@@ -69,8 +69,9 @@ fileStart  = datenum(numTokens(2),numTokens(3),numTokens(4));
 fileEnd    = datenum(numTokens(5),numTokens(6),numTokens(7));
 
 %% Trim the data
-idx = time1 >= fileStart & time1 < fileEnd + 1;
-time = time1(idx);
-activity = activity1(idx);
+idx1 = time1 >= fileStart & time1 < fileEnd + 1;
+idx2 = isnan(activity1);
+time = time1(idx1 & ~idx2);
+activity = activity1(idx1 & ~idx2);
 
 end

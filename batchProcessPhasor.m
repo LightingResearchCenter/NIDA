@@ -26,8 +26,10 @@ for i1 = 1:n
     % import actiwatch file
     actiFile = fullfile(actiDir,actiListing(i1).name);
     [aTime,aActivity,out.subject{i1}] = importActiwatch(actiFile);
+    
+    fileBase = regexprep(actiListing(i1).name,'\.csv','','ignorecase');
     % import dimesimeter file
-    dimeFile = fullfile(dimeDir,[actiListing(i1).name(1:end-4),'.txt']);
+    dimeFile = fullfile(dimeDir,[fileBase,'.txt']);
     [~,dTime,~,~,dCS,dActivity] = importDimesimeter(dimeFile);
     % combine the data
     ts1 = timeseries(dCS,dTime);
@@ -47,9 +49,16 @@ for i1 = 1:n
     else
         out.trial{i1} = 'error';
     end
+    close all
+    Title = {['Subject ',num2str(out.subject{i1}),' ',out.trial{i1}];...
+        [datestr(time(1),'mm/dd/yyyy HH:MM'),' - ',datestr(time(end),'mm/dd/yyyy HH:MM')]};
+    PhasorReport(time,CS,activity,Title);
+    reportFile = fullfile('phasorReports',[fileBase,'.pdf']);
+    saveas(gcf,reportFile);
 end
 
 save('phasorAnalysis.mat','out');
+close all;
 
 end
 

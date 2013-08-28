@@ -1,4 +1,4 @@
-function organizeExcel
+function organizeExcelPhasor
 %ORGANIZEEXCEL Organize input data and save to Excel
 %   Format for Mariana
 [inputName, inputPath] = uigetfile('*.mat');
@@ -16,8 +16,7 @@ varNames(varNameIdx) = [];
 nVars = length(varNames);
 
 %% Create header labels
-header = [{'subject'},{'WeekD1'},{'WeekD2'},{'WeekD3'},...
-    {'WeekendD1'},{'WeekendD2'},{'WeekendD3'}];
+header = [{'subject'},{'Week'},{'Weekend'}];
 
 %% Organize data
 % Seperate subject and trial from rest of the data
@@ -34,29 +33,19 @@ idxWK = strcmpi('week',trial);
 idxWE = strcmpi('weekend',trial);
 
 for i1 = 1:nVars
-    output = cell(nSubjects,6);
+    output = cell(nSubjects,3);
     for i2 = 1:nSubjects
         output{i2,1} = unqSubjects(i2);
         idxSub = subject == unqSubjects(i2);
         subjectDataWK = data{i1,1}{idxSub & idxWK};
         subjectDataWE = data{i1,1}{idxSub & idxWE};
-        nWKnight = length(subjectDataWK);
-        nWEnight = length(subjectDataWE);
-        for i3 = 1:3
-            if i3 <= nWKnight
-                output{i2,i3+1} = subjectDataWK(i3);
-            end
-        end
-        for i3 = 1:3
-            if i3 <= nWEnight
-                output{i2,i3+4} = subjectDataWE(i3);
-            end
-        end
+        output{i2,2} = subjectDataWK;
+        output{i2,3} = subjectDataWE;
     end
     
     % Create Excel file and write output to appropriate sheet
     sheetName = varNames{i1}; % Set sheet names
-    sheetTitle = [varNames(i1),{[]},{[]},{[]},{[]},{[]},{[]}]; % Create title
+    sheetTitle = [varNames(i1),{[]},{[]}]; % Create title
     xlswrite(saveFile,[sheetTitle;header;output],sheetName); % Write to file
 end
 

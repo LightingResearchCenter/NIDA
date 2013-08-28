@@ -15,7 +15,6 @@ out = struct;
 out.subject = cell(n,1);
 out.trial = cell(n,1);
 out.phasorMagnitude = cell(n,1);
-out.sleepPercent = cell(n,1);
 out.phasorAngle = cell(n,1);
 out.IS = cell(n,1);
 out.IV = cell(n,1);
@@ -37,13 +36,9 @@ for i1 = 1:n
     time = aTime;
     activity = aActivity.*(mean(dActivity)/mean(aActivity));
     % analyze the data
-    try
-        [out.phasorMagnitude{i1},out.phasorAngle{i1},out.IS{i1},out.IV{i1},...
-            out.mCS{i1},out.MagH{i1},out.f24abs{i1}] = ...
-            phasorAnalysis(time, CS, activity);
-    catch err
-        display(err);
-    end
+    [out.phasorMagnitude{i1},out.phasorAngle{i1},out.IS{i1},out.IV{i1},...
+        out.mCS{i1},out.MagH{i1},out.f24abs{i1}] = ...
+        phasorAnalysis(time, CS, activity);
     % determine trial
     if weekday(aTime(1)) == 2
         out.trial{i1} = 'week';

@@ -37,7 +37,8 @@ else
     stopTime = tempStop - .5;
 end
 
-days = ceil(stopTime - startTime);
+% days = ceil(stopTime - startTime) + 1;
+days = 3;
 
 % apply gaussian filter to data
 aEpoch = ((aTime(2)-aTime(1))*(24*3600)); % sample epoch in seconds
@@ -49,11 +50,11 @@ dActivity = gaussian(dActivity, dWin);
 dCS = gaussian(dCS, dWin);
 
 % plot files
-color1 = [245,135,35]/255; % orange
-color2 = [188,188,188]/255; % grey
-color3 = [27,50,95]/255; % blue
+color1 = [245,135, 35]/255; % orange
+color2 = [100,100,100]/255; % grey
+color3 = [ 27, 50, 95]/255; % blue
 color4 = [148,186,101]/255; % green
-color5 = [232,55,62]/255; % red
+color5 = [232, 55, 62]/255; % red
 lineWidth = 1.5;
 
 yMin = -0.1;
@@ -67,7 +68,10 @@ for i1 = 1:days
     ati = (aTime(aidx) - floor(startDay))*24;
     dti = (dTime(didx) - floor(startDay))*24;
     a = axes('XTick',12:1:36,'XLim',[12 36],...
-        'YTick',yMin:.1:yMax,'YLim',[yMin,yMax]);
+        'YTick',yMin:.1:yMax,'YLim',[yMin,yMax],...
+        'XTickLabelMode','manual','XTickLabel',...
+        {'12','13','14','15','16','17','18','19','20','21','22','23',...
+        '00','01','02','03','04','05','06','07','08','09','10','11','12'});
     hold(a);
     
     plot(a,ati,aActivity(aidx)/max(aActivity),...
@@ -84,6 +88,7 @@ for i1 = 1:days
     % plot bed times
     bidx = bedTimes >= startDay & bedTimes <= stopDay & ~isnan(bedTimes);
     dayBed = (bedTimes(bidx) - floor(startDay))*24;
+    dayBed2 = bedTimes(bidx);
     bn = length(dayBed);
     if bn >= 1
         for i2 = 1:bn
@@ -91,12 +96,13 @@ for i1 = 1:days
                 'Color',color4,'LineWidth',lineWidth);
             set(get(get(bedLine,'Annotation'),'LegendInformation'),...
                 'IconDisplayStyle','off'); % Exclude line from legend
-            text(dayBed(i2)+.01,-.05,datestr(dayBed(i2),'HH:MM'));
+            text(dayBed(i2)+.01,-.05,datestr(dayBed2(i2),'HH:MM'));
         end
     end
     % plot wake times
     widx = wakeTimes >= startDay & wakeTimes <= stopDay & ~isnan(wakeTimes);
     dayWake = (wakeTimes(widx) - floor(startDay))*24;
+    dayWake2 = wakeTimes(widx);
     wn = length(dayWake);
     if wn >= 1
         for i3 = 1:wn
@@ -104,13 +110,12 @@ for i1 = 1:days
                 'Color',color5,'LineWidth',lineWidth);
             set(get(get(wakeLine,'Annotation'),'LegendInformation'),...
                 'IconDisplayStyle','off'); % Exclude line from legend
-            text(dayWake(i3)+.01,-.05,datestr(dayWake(i3),'HH:MM'));
+            text(dayWake(i3)+.01,-.05,datestr(dayWake2(i3),'HH:MM'));
         end
     end
 
-%     datetick(a,'x','HH','keepticks','keeplimits');
     title(a,{['Subject ',num2str(subject),' ',trial];...
-        [datestr(min(aTime(aidx)),'mm/dd/yyyy'),' - ',datestr(max(aTime(aidx)),'mm/dd/yyyy')]})
+        [datestr(min(dTime(didx)),'mm/dd/yyyy'),' - ',datestr(max(dTime(didx)),'mm/dd/yyyy')]})
     legend(a,'show','Location','NorthOutside','Orientation','horizontal');
     fileName = ['sub',num2str(subject,'%02.0f'),...
         '_',datestr(startDay,'yyyy-mm-dd'),...

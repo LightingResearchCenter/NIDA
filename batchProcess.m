@@ -9,6 +9,9 @@ sleepFile = 'sleepLogUpdate.xlsx';
 
 [logSubject,bedTime,wakeTime] = importSleepLog(fullfile(sleepDir,sleepFile));
 
+excludesFile = fullfile(startDir,'excludedSleepAnalysis.xlsx');
+[exSubject,exTrial,exDay] = importExcludes(excludesFile,'Sheet1',2,22);
+
 % Preallocate output dataset
 n = length(actiListing);
 out = struct;
@@ -38,6 +41,13 @@ for i1 = 1:n
         out.trial{i1} = 'weekend';
     else
         out.trial{i1} = 'error';
+    end
+    
+    isExcluded = max(exSubject == out.subject{i1} &...
+        strcmpi(out.trial{i1},exTrial) &...
+        exDay == i1);
+    if isExcluded
+        continue;
     end
     idx1 = logSubject == out.subject{i1} & bedTime >= time(1) & bedTime <= time(end);
     out.bedTime{i1} = bedTime(idx1);

@@ -38,18 +38,26 @@ for i1 = 1:nVars
     for i2 = 1:nSubjects
         output{i2,1} = unqSubjects(i2);
         idxSub = subject == unqSubjects(i2);
-        subjectDataWK = data{i1,1}{idxSub & idxWK};
-        subjectDataWE = data{i1,1}{idxSub & idxWE};
+        try
+            subjectDataWK = data{i1,1}{idxSub & idxWK};
+        catch
+            subjectDataWK = ['error';'error';'error'];
+        end
+        try
+            subjectDataWE = data{i1,1}{idxSub & idxWE};
+        catch
+            subjectDataWE = ['error';'error';'error'];
+        end
         nWKnight = length(subjectDataWK);
         nWEnight = length(subjectDataWE);
         for i3 = 1:3
             if i3 <= nWKnight
-                output{i2,i3+1} = subjectDataWK(i3);
+                output{i2,i3+1} = subjectDataWK(i3,:);
             end
         end
         for i3 = 1:3
             if i3 <= nWEnight
-                output{i2,i3+4} = subjectDataWE(i3);
+                output{i2,i3+4} = subjectDataWE(i3,:);
             end
         end
     end

@@ -48,9 +48,9 @@ if exist('SleepStart','var') == 0
     SleepStart = BedTime;
     SleepStartIndex = find(Time > SleepStart,1);
 end
-if SleepStart < AnalysisStart
-    SleepStart = BedTime + 10/60/24;
-    SleepStartIndex = find(Time > SleepStart,1);
+if SleepStart < Time(1)
+    SleepStart = Time(1);
+    SleepStartIndex = 1;
 end
 
 %% Find Sleep End
@@ -63,6 +63,15 @@ while j > n+1
     else
         j = j-1;
     end
+end
+
+if exist('SleepEnd','var') == 0
+    SleepEnd = GetUpTime;
+    SleepEndIndex = find(Time > SleepEnd,1);
+end
+if SleepEnd > Time(end)
+    SleepEnd = Time(end);
+    SleepEndIndex = length(Time);
 end
 %% Calculate the parameters
 % Calculate Assumed Sleep in minutes

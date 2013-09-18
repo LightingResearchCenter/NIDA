@@ -2,16 +2,20 @@ function batchProcess
 %BATCHPROCESS Summary of this function goes here
 %   Detailed explanation goes here
 startDir = 'C:\Users\jonesg5\Desktop\NIDA';
-actiDir = uigetdir(startDir,'Select Actiwatch folder.');
-sleepDir = uigetdir(startDir,'Select sleep time folder.');
-
+actiDir = fullfile(startDir,'actiwatchData');
 actiListing = dir(fullfile(actiDir,'sub*.csv'));
+sleepDir = startDir;
+sleepFile = 'sleepLogUpdate.xlsx';
+
+[logSubject,bedTime,wakeTime] = importSleepLog(fullfile(sleepDir,sleepFile));
 
 % Preallocate output dataset
 n = length(actiListing);
 out = struct;
 out.subject = cell(n,1);
 out.trial = cell(n,1);
+out.bedTime = cell(n,1);
+out.getUpTime = cell(n,1);
 out.sleep = cell(n,1);
 out.sleepPercent = cell(n,1);
 out.wake = cell(n,1);
@@ -35,9 +39,10 @@ for i1 = 1:n
     else
         out.trial{i1} = 'error';
     end
-    % import sleep time file
-    sleepFile = fullfile(sleepDir,[actiListing(i1).name(1:16),'.txt']);
-    [out.bedTime{i1},out.getUpTime{i1}] = importSleepTimes(sleepFile);
+    idx1 = logSubject == out.subject{i1} & bedTime >= time(1) & bedTime <= time(end);
+    out.bedTime{i1} = bedTime(idx1);
+    idx2 = logSubject == out.subject{i1} & wakeTime >= time(1) & wakeTime <= time(end);
+    out.getUpTime{i1} = wakeTime(idx2);
     % analyze the data
     [out.sleep{i1},out.sleepPercent{i1},out.wake{i1},out.wakePercent{i1},...
         out.sleepEfficiency{i1},out.latency{i1},out.sleepBouts{i1},...

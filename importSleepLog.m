@@ -35,7 +35,7 @@ end
 % If row start and end points are not specified, define defaults
 if nargin <= 3
     startRow = 2;
-    endRow = 2000;
+    endRow = 200;
 end
 
 %% Import the data, extracting spreadsheet dates in MATLAB serial date number format (datenum)
@@ -62,4 +62,10 @@ data = reshape([raw{:}],size(raw));
 subject = data(:,1);
 bedTime = data(:,2);
 wakeTime = data(:,3);
+
+%% Remove NaN values
+idx = isnan(subject);
+subject(idx) = [];
+bedTime(idx) = [];
+wakeTime(idx) = [];
 

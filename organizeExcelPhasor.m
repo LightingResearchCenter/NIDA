@@ -37,11 +37,22 @@ for i1 = 1:nVars
     for i2 = 1:nSubjects
         output{i2,1} = unqSubjects(i2);
         idxSub = subject == unqSubjects(i2);
-        subjectDataWK = data{i1,1}{idxSub & idxWK};
-        subjectDataWE = data{i1,1}{idxSub & idxWE};
+        try
+            subjectDataWK = data{i1,1}{idxSub & idxWK};
+        catch
+            subjectDataWK = data{i1,1}(idxSub & idxWK);
+        end
+        try
+            subjectDataWE = data{i1,1}{idxSub & idxWE};
+        catch
+            subjectDataWE = data{i1,1}(idxSub & idxWE);
+        end
         output{i2,2} = subjectDataWK;
         output{i2,3} = subjectDataWE;
     end
+    % Replace empty cells with better empty cells
+    idxEmpty = cellfun('isempty',output);
+    output(idxEmpty) = {[]};
     
     % Create Excel file and write output to appropriate sheet
     sheetName = varNames{i1}; % Set sheet names

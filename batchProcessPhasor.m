@@ -4,13 +4,13 @@ function batchProcessPhasor
 
 addpath('phasorAnalysis');
 startDir = 'C:\Users\jonesg5\Desktop\NIDA';
-actiDir = uigetdir(startDir,'Select Actiwatch folder.');
-dimeDir = uigetdir(startDir,'Select Dimesimeter folder.');
+actiDir = fullfile(startDir,'actiwatchData');
+dimeDir = fullfile(startDir,'daysimeterDataLocalTime');
 
-actiListing = dir(fullfile(actiDir,'sub*.csv'));
+dimeListing = dir(fullfile(dimeDir,'sub*.txt'));
 
 % Preallocate output dataset
-n = length(actiListing);
+n = length(dimeListing);
 out = struct;
 out.subject = cell(n,1);
 out.trial = cell(n,1);
@@ -23,14 +23,13 @@ out.MagH = cell(n,1);
 out.f24abs = cell(n,1);
 
 for i1 = 1:n
-    % import actiwatch file
-    actiFile = fullfile(actiDir,actiListing(i1).name);
-    [aTime,aActivity,out.subject{i1}] = importActiwatch(actiFile);
-    
-    fileBase = regexprep(actiListing(i1).name,'\.csv','','ignorecase');
     % import dimesimeter file
-    dimeFile = fullfile(dimeDir,[fileBase,'.txt']);
+    dimeFile = fullfile(dimeDir,dimeListing(i1).name);
     [~,dTime,~,~,dCS,dActivity] = importDimesimeter(dimeFile);
+    fileBase = regexprep(dimeListing(i1).name,'\.txt','','ignorecase');
+    % import actiwatch file
+    actiFile = fullfile(actiDir,[fileBase,'.csv']);
+    [aTime,aActivity,out.subject{i1}] = importActiwatch(actiFile);
     % combine the data
     ts1 = timeseries(dCS,dTime);
     ts2 = resample(ts1,aTime);

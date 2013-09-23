@@ -36,6 +36,11 @@ for i1 = 1:n
     CS = ts2.Data;
     time = aTime;
     activity = aActivity.*(mean(dActivity)/mean(aActivity));
+    % remove NaN values
+    idxNaN = isnan(CS) | isnan(activity);
+    CS(idxNaN) = [];
+    time(idxNaN) = [];
+    activity(idxNaN) = [];
     % analyze the data
     [out.phasorMagnitude{i1},out.phasorAngle{i1},out.IS{i1},out.IV{i1},...
         out.mCS{i1},out.MagH{i1},out.f24abs{i1}] = ...

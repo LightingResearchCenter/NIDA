@@ -238,3 +238,6 @@ slprj/
 ## Excel
 *.xls
 *.xlsx
+
+## PDF
+*.pdf

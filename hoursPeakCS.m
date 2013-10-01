@@ -13,14 +13,29 @@ CS = CS(:);
 if length(time1) ~= length(CS)
     error('time1 and CS vectors are not of equal length');
 end
+% Check that there are no NaN values in time1
+idx1 = isnan(time1);
+if max(idx1)
+    warning('NaN present in time1, these will be removed');
+    time1(idx1) = [];
+    CS(idx1) = [];
+end
+% Check that there are no NaN values in CS
+idx2 = isnan(CS);
+if max(idx2)
+    warning('NaN present in CS, these will be removed');
+    time1(idx2) = [];
+    CS(idx2) = [];
+end    
 % Check that the time1 array is sorted in ascending order
 if ~issorted(time1)
     warning('The time1 array is not in ascending order and will be sorted');
     % Sort time1 into ascending order
-    [time1,idx1] = sort(time1);
+    [time1,idx3] = sort(time1);
     % Sort CS according to time1
-    CS = CS(idx1);
+    CS = CS(idx3);
 end
+
 
 %% Calculate intervals between time points
 time2 = circshift(time1,1);
@@ -30,8 +45,8 @@ interval(1) = mean(interval(2:end));
 
 %% Calculate the total duration of CS at or above threshold
 % Find CS greater than or equal to the threshold
-idx2 = CS >= threshold;
-totalDuration = sum(interval(idx2))*24; % in hours
+idx4 = CS >= threshold;
+totalDuration = sum(interval(idx4))*24; % in hours
 
 %% Calculate the average duration per day
 days = time1(end)-time1(1);

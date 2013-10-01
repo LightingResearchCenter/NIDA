@@ -1,4 +1,4 @@
-function [duration] = hoursPeakCS(time1,CS,threshold)
+function duration = hoursPeakCS(time1,CS,threshold)
 %HOURSPEAKCS Average hours per day that CS is above the threshold
 %   time1 is an array of either datenum values or in units of days.
 %   CS is an array of circadian stimulus values equal in length to time.

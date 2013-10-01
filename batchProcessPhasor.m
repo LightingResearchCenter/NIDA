@@ -21,6 +21,7 @@ out.IV = cell(n,1);
 out.mCS = cell(n,1);
 out.MagH = cell(n,1);
 out.f24abs = cell(n,1);
+out.peakCSperDay = cell(n,1);
 
 for i1 = 1:n
     % import dimesimeter file
@@ -45,6 +46,7 @@ for i1 = 1:n
     [out.phasorMagnitude{i1},out.phasorAngle{i1},out.IS{i1},out.IV{i1},...
         out.mCS{i1},out.MagH{i1},out.f24abs{i1}] = ...
         phasorAnalysis(time, CS, activity);
+    out.peakCSperDay{i1} = hoursPeakCS(time,CS,.67);
     % determine trial
     if weekday(aTime(1)) == 2
         out.trial{i1} = 'week';

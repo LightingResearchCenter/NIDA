@@ -39,7 +39,7 @@ end
 
 %% Calculate intervals between time points
 time2 = circshift(time1,1);
-interval = time2 - time1;
+interval = time1 - time2;
 % replace the first interval (a negative false value) with the average
 interval(1) = mean(interval(2:end));
 

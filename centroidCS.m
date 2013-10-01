@@ -21,6 +21,7 @@ C_theta = atan2(C_y,C_x);   % angular centroid
 
 %% Convert the centroid for output
 hour = C_theta*12/pi; % Convert radians to hours
+hour = mod(hour,24); % Correct for rollover
 magnitude = C_rho; % Assign C_rho as central magnitude of CS
 
 end

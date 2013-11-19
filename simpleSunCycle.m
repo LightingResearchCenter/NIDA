@@ -38,8 +38,8 @@ Nin = nargin;
 
 if Nin < 3 || isempty(Date) % if an empty Date is given exit function
    return
-elseif size(Date,2) == 1 % convert Date from datenum to [YYYY MM DD]
-   Date = datevec(Date);
+else % convert Date from datenum to [YYYY MM DD]
+   Date = datevec(Date(:));
    Date = Date(:,1:3);
 end
 

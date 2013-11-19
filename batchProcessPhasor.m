@@ -3,7 +3,7 @@ function batchProcessPhasor
 %   Detailed explanation goes here
 
 addpath('phasorAnalysis');
-startDir = 'C:\Users\jonesg5\Desktop\NIDA';
+startDir = '\\ROOT\projects\NIDA';
 actiDir = fullfile(startDir,'actiwatchData');
 dimeDir = fullfile(startDir,'daysimeterDataLocalTime');
 

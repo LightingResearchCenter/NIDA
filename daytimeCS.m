@@ -10,7 +10,7 @@ function meanDaytimeCS = daytimeCS(timeD,CS,lat,lon,GMToff)
 %% Calculate sunrise and sunset times
 % Find the dates that are included in the data
 Date = unique(floor(timeD));
-Date = Date(:)'; % make sure Date is a vertical vector
+Date = Date(:); % make sure Date is a vertical vector
 
 % Caluclate approximate sunrise and sunset time
 [sunrise,sunset] = simpleSunCycle(lat,lon,Date);
@@ -18,6 +18,9 @@ Date = Date(:)'; % make sure Date is a vertical vector
 % Adjust sunrise and sunset times from GMT to desired timezone
 sunrise = sunrise + GMToff/24 + isDST(Date)/24;
 sunset = sunset + GMToff/24 + isDST(Date)/24;
+% Fix rollover error
+idxRoll = sunset < sunrise;
+sunset(idxRoll) = sunset(idxRoll) + 1;
 
 %% Find times that occur during the day
 % Preallocate the logical index
@@ -31,7 +34,7 @@ end
 % Find daytime CS
 dayCS = CS(dayIdx);
 % Find and remove daytime CS = 0
-dayCS(dayCs == 0) = [];
+dayCS(dayCS == 0) = [];
 % Take the average
 meanDaytimeCS = mean(dayCS);
 

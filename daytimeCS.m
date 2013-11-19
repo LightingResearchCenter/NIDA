@@ -16,8 +16,8 @@ Date = Date(:)'; % make sure Date is a vertical vector
 [sunrise,sunset] = simpleSunCycle(lat,lon,Date);
 
 % Adjust sunrise and sunset times from GMT to desired timezone
-sunrise = sunrise + GMToff/24;
-sunset = sunset + GMToff/24;
+sunrise = sunrise + GMToff/24 + isDST(Date)/24;
+sunset = sunset + GMToff/24 + isDST(Date)/24;
 
 %% Find times that occur during the day
 % Preallocate the logical index

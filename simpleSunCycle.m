@@ -1,4 +1,4 @@
-function [sunRise,sunSet] = simpleSunCycle(lat,lon,Date,n)
+function [sunrise,sunset] = simpleSunCycle(lat,lon,Date,n)
 % SIMPLESUNCYCLE  returns the Time of SunRise, SunSet
 %   SunRiseSet = simpleSunCycle(lat,lon,day,n);
 %
@@ -103,8 +103,8 @@ if any(ok)
 end
 
 % convert results to datenum
-sunRise = datenum(Date(:,1),Date(:,2),Date(:,3),SunRiseSet(:,1),0,0);
-sunSet = datenum(Date(:,1),Date(:,2),Date(:,3),SunRiseSet(:,2),0,0);
+sunrise = datenum(Date(:,1),Date(:,2),Date(:,3),SunRiseSet(:,1),0,0);
+sunset = datenum(Date(:,1),Date(:,2),Date(:,3),SunRiseSet(:,2),0,0);
 end
 
 

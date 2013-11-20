@@ -1,7 +1,7 @@
 function batchProcess
 %BATCHPROCESS Summary of this function goes here
 %   Detailed explanation goes here
-startDir = 'C:\Users\jonesg5\Desktop\NIDA';
+startDir = '\\ROOT\projects\NIDA';
 actiDir = fullfile(startDir,'actiwatchData');
 actiListing = dir(fullfile(actiDir,'sub*.csv'));
 sleepDir = startDir;

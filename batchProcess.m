@@ -44,14 +44,14 @@ for i1 = 1:n
     end
     
     idx1 = logSubject == out.subject{i1} & bedTime >= time(1) & bedTime <= time(end);
-    out.bedTime{i1} = bedTime(idx1);
+    out.bedTime{i1} = bedTime(idx1)-693960;
     idx2 = logSubject == out.subject{i1} & wakeTime >= time(1) & wakeTime <= time(end);
-    out.getUpTime{i1} = wakeTime(idx2);
+    out.getUpTime{i1} = wakeTime(idx2)-693960;
     % analyze the data
     [out.sleep{i1},out.sleepPercent{i1},out.wake{i1},out.wakePercent{i1},...
         out.sleepEfficiency{i1},out.latency{i1},out.sleepBouts{i1},...
         out.wakeBouts{i1},out.meanSleepBout{i1},out.meanWakeBout{i1}]...
-        = AnalyzeFile(time,activity,out.bedTime{i1},out.getUpTime{i1},out.subject{i1},out.trial{i1},exSubject,exTrial,exDay);
+        = AnalyzeFile(time,activity,bedTime(idx1),wakeTime(idx2),out.subject{i1},out.trial{i1},exSubject,exTrial,exDay);
 end
 
 save('sleepAnalysis.mat','out');

@@ -79,14 +79,14 @@ AssumedSleep = etime(datevec(Time(SleepEndIndex)),datevec(Time(SleepStartIndex))
 % Calculate Actual Sleep Time in minutes
 ActualSleep = sum(SleepState(SleepStartIndex:SleepEndIndex))*Epoch/60;
 % Calculate Actual Sleep Time Percentage
-ActualSleepPercent = ActualSleep*100/AssumedSleep;
+ActualSleepPercent = ActualSleep/AssumedSleep;
 % Calculate Actual Wake Time in minutes
 ActualWake = length(find(SleepState(SleepStartIndex:SleepEndIndex)==0))*Epoch/60;
 % Calculate Actual Wake Time Percentage
-ActualWakePercent = ActualWake*100/AssumedSleep;
+ActualWakePercent = ActualWake/AssumedSleep;
 % Calculate Sleep Efficiency in minutes
 TimeInBed = etime(datevec(GetUpTime),datevec(BedTime))/60;
-SleepEfficiency = ActualSleep*100/TimeInBed;
+SleepEfficiency = ActualSleep/TimeInBed;
 % Calculate Sleep Latency in minutes
 Latency = etime(datevec(SleepStart),datevec(BedTime))/60;
 % Find Sleep Bouts and Wake Bouts

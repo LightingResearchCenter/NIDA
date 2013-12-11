@@ -1,4 +1,4 @@
-function [Seconds,Lux,CLA,Activity] = importfile(filename, startRow, endRow)
+function [Seconds,Lux,CLA,Activity,x,y] = importfile(filename, startRow, endRow)
 %IMPORTFILE Import numeric data from a text file as column vectors.
 %   [TIME1,LUX1,CLA1,ACTIVITY1,TEMPERATURE1,X1,Y1] = IMPORTFILE(FILENAME)
 %   Reads data from text file FILENAME for the default selection.
@@ -64,8 +64,8 @@ Lux = dataArray{:, 2};
 CLA = dataArray{:, 3};
 Activity = dataArray{:, 4};
 % temperature = dataArray{:, 5};
-% x = dataArray{:, 6};
-% y = dataArray{:, 7};
+x = dataArray{:, 6};
+y = dataArray{:, 7};
 
 end
 

@@ -12,6 +12,8 @@ function hc = phasorplot(varargin)
 % argument 8: pass a zero if you don't want heads on your arrows, and pass the size of the heads you want if not (e.g., .1)
 % argument 9: pass a zero if you want the circles labelled on the positive y axis, a one if you want them on the negative x axis, a two if you want them on the negative y axis, and a 3 if you want them on the positive x axis
 % argument 10: the distance from the plot you want the spoke labels (0 by default)
+% argument 11: arrow line thickness in points (default )
+% argument 12; arrow color (default 'k')
 % 
 % Thus, to plot a magnitude of .5 and an angle of 3 hours on a plot with radius 1, 3 rings, 12 spokes, small arrowheads, and labels on the -x-axis, you could use:
 % phasorplot(.5, 3, 1, 3, 12, 'top', 'left', .05, 1, 0)
@@ -32,6 +34,8 @@ switch(nargs)
         args{8} = 0;
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 3
         args{4} = 4;
@@ -41,6 +45,8 @@ switch(nargs)
         args{8} = 0;
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 4
         args{5} = 6;
@@ -49,6 +55,8 @@ switch(nargs)
         args{8} = 0;
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 5
         args{6} = 'top';
@@ -56,24 +64,34 @@ switch(nargs)
         args{8} = 0;
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 6
         args{7} = 'left';
         args{8} = 0;
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 7
         args{8} = 0;
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 8
         args{9} = 0;
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
     case 9
         args{10} = 0;
+        args{11} = 0.5;
+        args{12} = 'k';
         
 end
 
@@ -131,13 +149,13 @@ isholdon = ishold(cax);
 
 if isempty(s),
     h = polarhour2(cax,th,r,args{3},args{4},args{5},args{6},args{7},...
-        args{8},args{9},args{10});
+        args{8},args{9},args{10},args{11},args{12});
 %     co = get(cax,'colororder');
 %     set(h,'color',co(1,:))
-    set(h,'color','k');
+    set(h,'color',args{12});
 else
     h = polarhour2(cax,th,r,s);
-    set(h,'color','k');
+    set(h,'color',args{12});
 end
 if ~isholdon, set(cax,'NextPlot',next); end
 
@@ -153,6 +171,12 @@ function hpol = polarhour2(varargin)
 
 theta = args{1};
 rho = args{2};
+
+try
+    lineWidth = args{11};
+catch
+    lineWidth = 0.5;
+end
 
 if ischar(rho)
     line_style = rho;
@@ -183,8 +207,9 @@ hold_state = ishold(cax);
 
 % get x-axis text color so grid is in same color
 % tc = get(cax,'xcolor');
-tc = [0.5 0.5 0.5];
-ls = get(cax,'gridlinestyle');
+tc = [0.7 0.7 0.7];
+% ls = get(cax,'gridlinestyle');
+ls = '-';
 
 % Hold on to current Text defaults, reset them to the
 % Axes' font attributes so tick marks use them.
@@ -237,7 +262,7 @@ if ~hold_state
     yunit(inds(1:2:5)) = zeros(3,1);
 % plot background if necessary
     if ~ischar(get(cax,'color')),
-       patch('xdata',xunit*rmax,'ydata',yunit*rmax, ...
+       patch('xdata',xunit*rmax,'ydata',yunit*rmax,'zdata',-300*ones(size(xunit)), ...
              'edgecolor',tc,'facecolor',get(cax,'color'),...
              'handlevisibility','off','parent',cax);
     end
@@ -256,7 +281,7 @@ if ~hold_state
     end
     
     for i=(rmin+rinc):rinc:rmax
-        hhh = line(xunit*i,yunit*i,'linestyle',ls,'color',tc,'linewidth',1,...
+        hhh = line(xunit*i,yunit*i,-100*ones(size(xunit)),'linestyle',ls,'color',tc,'linewidth',0.5,...
                    'handlevisibility','off','parent',cax);
         if(nargs > 8)
             if(args{9} == 0)
@@ -279,7 +304,7 @@ if ~hold_state
             end
         end
     end
-    set(hhh,'linestyle','-') % Make outer circle solid
+    set(hhh,'LineStyle','-','Color','k') % Make outer circle solid
 
 % plot spokes
     th = (1:6)*2*pi/12;
@@ -292,7 +317,7 @@ if ~hold_state
     cst = cos(th); snt = sin(th);
     cs = [-cst; cst];
     sn = [-snt; snt];
-    line(rmax*cs,rmax*sn,'linestyle',ls,'color',tc,'linewidth',1,...
+    line(rmax*cs,rmax*sn,-200*ones(size(cs)),'linestyle',ls,'color',tc,'linewidth',0.5,...
          'handlevisibility','off','parent',cax)
 
 % annotate spokes in degrees
@@ -301,16 +326,25 @@ if ~hold_state
         rt = (1.1 + args{10}) * rmax;
     end
     for i = 1:length(th)
-        text(rt*cst(i),rt*snt(i),strcat(int2str(spoke_factor*i*2),' h'),...
-             'horizontalalignment','center',...
+        hText1 = text(rt*cst(i),rt*snt(i),strcat(int2str(spoke_factor*i*2),' h'),...
+             'HorizontalAlignment','center',...
              'handlevisibility','off','parent',cax);
+        
         if i == length(th)
             loc = int2str(0);
         else
             loc = int2str(-12+spoke_factor*i*2);
         end
-        text(-rt*cst(i),-rt*snt(i),strcat(loc,' h'),'horizontalalignment','center',...
-             'handlevisibility','off','parent',cax)
+        hText2 = text(-rt*cst(i),-rt*snt(i),strcat(loc,' h'),'HorizontalAlignment','center',...
+             'handlevisibility','off','parent',cax);
+         
+        if abs(spoke_factor*i*2) > 6
+            set(hText1,'HorizontalAlignment','right');
+            set(hText2,'HorizontalAlignment','left');
+        elseif abs(spoke_factor*i*2) < 6
+            set(hText1,'HorizontalAlignment','left');
+            set(hText2,'HorizontalAlignment','right');
+        end
     end
 
 % set view to 2-D
@@ -332,9 +366,9 @@ yy = rho.*sin(theta);
 
 % plot data on top of grid
 if strcmp(line_style,'auto')
-    q = plot(xx,yy,'LineWidth',2,'parent',cax);
+    q = plot(xx,yy,'LineWidth',lineWidth,'parent',cax);
 else
-    q = plot(xx,yy,line_style,'LineWidth',2,'parent',cax);
+    q = plot(xx,yy,line_style,'LineWidth',lineWidth,'parent',cax);
 end
 
 if nargout == 1

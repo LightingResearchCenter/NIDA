@@ -8,6 +8,12 @@ addpath(phasorToolkit);
 
 projectDir = fullfile([filesep,filesep],'root','projects','NIDA','2011');
 inputDir = fullfile(projectDir,'daysimeterDataLocalTime');
+resultsDir = fullfile(projectDir,'results');
+plotDir = fullfile(projectDir,'phasorPlots');
+
+runtime = datestr(now,'yyyy-mm-dd_HHMM');
+
+
 FileListing = dir(fullfile(inputDir,'sub*.txt'));
 
 % Extract information from filename
@@ -102,14 +108,41 @@ for i1 = 1:nSubjects
 
 end % end of i1
 
-% Average the results
-MeanPhasor = dataset;
-MeanPhasor.wkDayMagnitude = mean(cell2mat(Phasor.wkDayMagnitude));
-MeanPhasor.wkDayAngleHrs = mean(cell2mat(Phasor.wkDayAngleHrs));
-MeanPhasor.wkEndMagnitude = mean(cell2mat(Phasor.wkEndMagnitude));
-MeanPhasor.wkEndAngleHrs = mean(cell2mat(Phasor.wkDayAngleHrs));
-MeanPhasor.combinedMagnitude = mean(cell2mat(Phasor.combinedMagnitude));
-MeanPhasor.combinedAngleHrs = mean(cell2mat(Phasor.combinedAngleHrs));
+% Save results to Excel
+phasorPath = fullfile(resultsDir,[runtime,'_Phasor.xlsx']);
+cellPhasor = dataset2cell(Phasor);
+varNameArray = cellPhasor(1,:);
+prettyVarNameArray = lower(regexprep(varNameArray,'([^A-Z])([A-Z0-9])','$1 $2'));
+cellPhasor(1,:) = prettyVarNameArray;
+xlswrite([phasorPath,'.xlsx'],cellPhasor);
+
+% Plot the phasors
+%   Weekday phasors
+magnitude = cell2mat(Phasor.wkDayMagnitude);
+angle = cell2mat(Phasor.wkDayAngleHrs);
+figure(1);
+plotTitle = 'Weekdays';
+plotphasorcompass(magnitude,angle,plotTitle)
+plotPath = fullfile(plotDir,[runtime,'_phasorCompass_Weekday.jpg']);
+saveas(1,plotPath);
+
+%   Weekend phasors
+magnitude = cell2mat(Phasor.wkEndMagnitude);
+angle = cell2mat(Phasor.wkEndAngleHrs);
+figure(2);
+plotTitle = 'Weekends';
+plotphasorcompass(magnitude,angle,plotTitle)
+plotPath = fullfile(plotDir,[runtime,'_phasorCompass_Weekend.jpg']);
+saveas(2,plotPath);
+
+%   Combined phasors
+magnitude = cell2mat(Phasor.combinedMagnitude);
+angle = cell2mat(Phasor.combinedAngleHrs);
+figure(3);
+plotTitle = 'Combined';
+plotphasorcompass(magnitude,angle,plotTitle)
+plotPath = fullfile(plotDir,[runtime,'_phasorCompass_Combined.jpg']);
+saveas(3,plotPath);
 
 end
 

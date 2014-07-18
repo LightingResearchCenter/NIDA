@@ -1,4 +1,4 @@
-function hc = phasorplot(varargin)
+function hc = phasorplot2(varargin)
 % phasor plot plots phasors passed as magnitude and angle (angle in hours)
 % The function requires at least 2 arguments, and the arguments that can be
 % passed are:

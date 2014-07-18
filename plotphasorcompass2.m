@@ -1,4 +1,4 @@
-function varargout = plotphasorcompass(phasorMagnitude,phasorAngle,plotTitle)
+function varargout = plotphasorcompass2(phasorMagnitude,phasorAngle,plotTitle)
 %PLOTPHASORCOMPASS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,9 +9,9 @@ hAxes = axes;
 meanMagnitude = mean(phasorMagnitude);
 meanAngle = mean(phasorAngle);
 
-phasorplot(phasorMagnitude,phasorAngle,.75,3,6,'top','left',.1);
+phasorplot2(phasorMagnitude,phasorAngle,.75,3,6,'top','left',.1);
 hold on
-phasorplot(meanMagnitude,meanAngle,.75,3,6,'top','left',.1,0,0,2,'r');
+phasorplot2(meanMagnitude,meanAngle,.75,3,6,'top','left',.1,0,0,2,'r');
 
 title(hAxes,{plotTitle;'Circadian Stimulus/Activity Phasor'});
 

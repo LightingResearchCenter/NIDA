@@ -122,7 +122,7 @@ magnitude = cell2mat(Phasor.wkDayMagnitude);
 angle = cell2mat(Phasor.wkDayAngleHrs);
 figure(1);
 plotTitle = 'Weekdays';
-plotphasorcompass(magnitude,angle,plotTitle)
+plotphasorcompass2(magnitude,angle,plotTitle)
 plotPath = fullfile(plotDir,[runtime,'_phasorCompass_Weekday.jpg']);
 saveas(1,plotPath);
 
@@ -131,7 +131,7 @@ magnitude = cell2mat(Phasor.wkEndMagnitude);
 angle = cell2mat(Phasor.wkEndAngleHrs);
 figure(2);
 plotTitle = 'Weekends';
-plotphasorcompass(magnitude,angle,plotTitle)
+plotphasorcompass2(magnitude,angle,plotTitle)
 plotPath = fullfile(plotDir,[runtime,'_phasorCompass_Weekend.jpg']);
 saveas(2,plotPath);
 
@@ -140,7 +140,7 @@ magnitude = cell2mat(Phasor.combinedMagnitude);
 angle = cell2mat(Phasor.combinedAngleHrs);
 figure(3);
 plotTitle = 'Combined';
-plotphasorcompass(magnitude,angle,plotTitle)
+plotphasorcompass2(magnitude,angle,plotTitle)
 plotPath = fullfile(plotDir,[runtime,'_phasorCompass_Combined.jpg']);
 saveas(3,plotPath);
 
